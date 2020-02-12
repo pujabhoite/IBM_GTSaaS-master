@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl/>
+        <http_method>GET</http_method>
+        <name>igiGetUserEntitlements</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+    var json = new global.JSON();
+	var req = new sn_ws.RESTMessageV2();
+	var session = gs.getSession();
+	var authToken = session.getClientData('authToken');
+	var userName = session.getClientData('username');
+	var endpoint =  encodeURI('https://ibm-igi-mobileqa.persistent.com/api/v1/servicenow/'+ userName +'/searchuserentitlements');
+	
+	req.setEndpoint(endpoint);
+	req.setHttpMethod('post');
+	req.setRequestHeader("Accept","application/json");
+	req.setRequestHeader("authToken", authToken);
+	
+	var res = req.execute();
+	var res1 = res.getBody().toString();
+	
+	response.setBody(json.decode(res1));
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_263474_igiportal/igigetuserentitlements</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-11 05:54:45</sys_created_on>
+        <sys_id>a22490e8dbe8a300835e5740cf96195c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>igiGetUserEntitlements</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sys_ws_operation_a22490e8dbe8a300835e5740cf96195c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-11 05:54:45</sys_updated_on>
+        <web_service_definition display_value="igiGetUserEntitlements">4d045868dbe8a300835e5740cf961995</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

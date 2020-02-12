@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_container">
+    <sp_container action="INSERT_OR_UPDATE">
+        <background_color>#c4d1d9</background_color>
+        <background_image/>
+        <background_style>default</background_style>
+        <bootstrap_alt>false</bootstrap_alt>
+        <class_name/>
+        <container_class_name/>
+        <name>igiPortalDashboardPage - Container 1</name>
+        <order>1</order>
+        <sp_page display_value="igiportaldashboardpage">203a5ef9db33130033c6fbef29961944</sp_page>
+        <subheader>false</subheader>
+        <sys_class_name>sp_container</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-08-09 06:08:46</sys_created_on>
+        <sys_id>216b567ddb33130033c6fbef299619e8</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>igiPortalDashboardPage - Container 1</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_container_216b567ddb33130033c6fbef299619e8</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-04 11:49:45</sys_updated_on>
+        <title/>
+        <width>container</width>
+    </sp_container>
+</record_update>

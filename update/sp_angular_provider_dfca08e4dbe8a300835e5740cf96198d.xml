@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>igiMenuService</name>
+        <script><![CDATA[function igiMenuService($rootScope) {
+
+	 var service = {
+		userAccounts: {},
+		userEntitlements:{},
+		allEntitlements:{},
+		cart:{
+			items : []
+		},
+	 
+	 
+    setUserAccounts: function (userAccounts) {
+		console.log("In set user accounts service");
+		service.userAccounts = userAccounts;
+		for(var account in service.userAccounts.result[0].accounts){
+			service.userAccounts.result[0].accounts[account].statusVal = service.getStatusVal(service.userAccounts.result[0].accounts[account].status);
+		}
+		console.log(service.userAccounts);
+    },
+	 
+	 
+    setUserEntitlements: function (userEntitlements) {
+		console.log("In set user entitlements service");
+		service.userEntitlements = userEntitlements;
+		for(var userEntitlement in service.userEntitlements.resources){
+			service.userEntitlements.resources[userEntitlement].typeVal = service.getTypeVal(service.userEntitlements.resources[userEntitlement].type);
+		}
+		console.log(service.userEntitlements);
+    },
+	 
+	 
+	setAllEntitlements: function (allEntitlements) {
+		console.log("In set all entitlements service");
+		service.allEntitlements = allEntitlements;
+		if("resources" in service.allEntitlements){
+			for(var entitlement in service.allEntitlements.resources){
+				service.allEntitlements.resources[entitlement].check = false;
+				service.allEntitlements.resources[entitlement].typeVal = service.getTypeVal(service.allEntitlements.resources[entitlement].type);
+			}
+		}
+		console.log(service.allEntitlements);
+    },
+	 
+	 
+	 addToCart: function(entitlement){
+		 console.log("In add to cart");
+		 for(var item in service.allEntitlements.resources){
+				if(service.allEntitlements.resources[item].id == entitlement.id){
+						service.allEntitlements.resources[item].check = true;	
+						break;
+				}
+			}
+		service.cart.items.push(entitlement);
+	 },
+	 
+	 
+	 removeFromCart: function(entitlement){
+		 console.log("In remove from cart");
+		 for(var item in service.allEntitlements.resources){	
+			 if(service.allEntitlements.resources[item].id == entitlement.id){
+				 service.allEntitlements.resources[item].check = false;	
+						break;
+				}
+			}
+		 for(var element in service.cart.items){
+			 if(service.cart.items[element].id == entitlement.id){
+				 service.cart.items.splice(element,1);
+			 }
+		 }
+	 },
+	 emptyCart: function(){
+			for(var entitlement in service.allEntitlements.resources){
+				service.allEntitlements.resources[entitlement].check = false;
+				service.allEntitlements.resources[entitlement].typeVal = service.getTypeVal(service.allEntitlements.resources[entitlement].type);
+			}
+		  service.cart.items.splice(0,service.cart.items.length);
+	 },
+	 
+	 getStatusVal: function(status){
+		 switch (status){
+			 case "0":
+				 return "Active";
+			 case "1":
+				 return "Inactive";
+			 default:
+				 return "";
+		 }
+	 },
+	 
+	 
+	 getTypeVal: function(type){
+		 switch(type){
+			 case 1:
+				 return "Permission";
+			 case 2:
+				 return "IT Role";
+			 case 3:
+				 return "Business Role";
+			 default:
+				 return "";
+		 }
+	 }
+
+  };
+	return service;
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-11 05:12:03</sys_created_on>
+        <sys_id>dfca08e4dbe8a300835e5740cf96198d</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>igiMenuService</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_angular_provider_dfca08e4dbe8a300835e5740cf96198d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-11 06:28:58</sys_updated_on>
+        <type>service</type>
+    </sp_angular_provider>
+</record_update>

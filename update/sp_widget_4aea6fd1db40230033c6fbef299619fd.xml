@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope,igiMenuService,igiAccountsService,igiEntitlementsService,$q) {
+  /* widget controller */
+  var c = this;
+	
+	// added for catalog widget //
+	 $scope.allEntitlements = "";
+	$scope.$watch(function(){
+		return igiMenuService.allEntitlements;
+	}, function (newValue, oldValue) {
+		if(typeof newValue == 'object' && "resources" in newValue)
+			$scope.allEntitlements = newValue.resources;
+  });
+	
+	$scope.allEntitlementsSubcategories = function(){
+		var allSubcategories = [];
+		for(var i = 0 ; i < $scope.allEntitlements.length; i++){
+			if(!allSubcategories.includes($scope.allEntitlements[i].typeVal))
+			allSubcategories.push($scope.allEntitlements[i].typeVal);
+		}
+		return allSubcategories;
+	}
+	
+	$scope.mainCatalogPage = true;
+	
+	$scope.catalogCategory = function(catalog){
+		$scope.mainCatalogPage = false;
+		$scope.selectedSubcategory = catalog;
+	}
+	$scope.backToMainCatalog = function(){
+		$scope.mainCatalogPage = true;
+	}
+	
+	
+	// end content for catalog widget //
+	
+	
+	$scope.sessionOn = false;
+	$scope.activeTab = "USER_ACCOUNTS";
+	$scope.data.action = "getDashboardData";
+	$scope.cart = igiMenuService.cart.items;
+
+	$scope.server.update().then(function(data){
+
+  var userDetailsPromise = igiAccountsService.getUserDetails(data.userName,data.authToken);
+	var userEntitlementsPromise = igiEntitlementsService.getUserEntitlements();
+	var allEntitlementsPromise = igiEntitlementsService.getAllEntitlements();
+	
+	$q.all([userDetailsPromise, userEntitlementsPromise,allEntitlementsPromise]).then(function (results) {
+		if("responseCode" in results[0].data.result && results[0].data.result.responseCode == "user_details.search.success"){
+			igiMenuService.setUserAccounts(results[0].data.result);
+		  igiMenuService.setUserEntitlements(results[1].data.result);
+			igiMenuService.setAllEntitlements(results[2].data.result);
+		}		
+		else{
+      console.log("go to login")
+			window.location = "?id=igiportalloginpage";
+		}
+	});
+
+	});
+	$scope.setActiveTab =  function(active_tab){		
+		$scope.activeTab = active_tab;
+	}
+	$scope.logout = function(){
+		$scope.data.action = "logout";
+		$scope.server.update().then(function(data){
+			console.log("go to login")
+			window.location = "?id=igiPortalLoginPage";
+		});
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.main-container{
+  background-color: #f2f2f2;
+}
+.wrap-text1{
+  word-wrap: break-word;
+}
+
+.overflow-120{
+     height: 120px;
+    overflow: hidden;
+}
+.catalog-head1{
+  font-size: 18px;
+  padding-top: 20px;
+}
+.catalog-head2{  
+  padding-left: 15px;
+  font-size: 18px;  
+}
+// css added for catalog
+.catalog-category-container{
+   padding-left: 15px;
+   padding-right: 15px;
+}
+.catalog-container{
+  padding-left: 25px;
+  padding-right: 25px;
+  min-height: 370px;
+}
+
+.menu-desktop{
+  padding-top: 30px !important;
+  padding-left: 15px !important;
+  border-bottom: 1px solid #f0f2f5; padding: 5px;
+  display: inline-block;
+}
+.span-margin{
+  margin-right: 10px;
+  padding-left: 10px
+}
+.border-left{
+  border-left: 1px solid #bdbfc1;
+}
+
+.colored-background{
+  background-color: #e6edef;
+}
+.dropdown-for-mobile{
+  
+}
+.dark-text{
+  color: #000000;
+}
+.catalogImage{
+  margin-right: 20px !important;
+}
+.catID{
+  margin-bottom: 20px !important;
+}
+.h5{
+  a{
+    color: #1fabc4 !important;
+  }
+}
+.cursorPointer{
+  cursor: pointer;
+}
+//end css for catalog 
+
+
+
+
+.bottom-left{
+  position: absolute;
+  bottom: 1px;
+  right: 0px;
+  padding-top: 4px;  
+ border-top: 1px solid #d81c1c;
+ min-height: 36px;
+
+}
+.bottom-left1{
+    position: absolute;
+   top: 40px;
+  margin-left: 5px;
+}
+
+
+.navbar-inverse{
+  background-color: #ffffff;
+  border-color: #ffffff;
+  margin-bottom: 0px;
+}
+
+.container-fluid{
+  padding-left:0px;
+  padding-right: 0px;
+}
+
+.navbar-inverse .navbar-nav &gt; li:hover {   
+  color: #ffb366;
+}
+
+.navbar-inverse .navbar-nav &gt; li &gt; a:hover {   
+  color: #ffb366;
+}
+
+.navbar-inverse .navbar-nav &gt; li &gt; a {   
+  color: #000000;
+  padding-bottom: 13px;  
+  padding-left: 14px;  
+  padding-right: 14px;  
+}
+
+
+.navbar-inverse .navbar-nav &gt; li:not(:focus){   
+  color: black;
+}
+
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: #e6edef;
+}
+
+.navbar-inverse .navbar-toggle {
+    border-color: #2d2525;
+}
+
+.navbar-inverse .navbar-toggle .icon-bar {
+    background-color: #333;
+}
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: #fff;
+}
+
+.navbar-brand{
+  margin-top: 1px;
+  margin-left: 0px;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 30px;
+ // border-bottom: 1px solid #e0e1e2;
+}
+
+.navbar-inverse .navbar-collapse {
+    padding-left:0px;
+    border-color: #e0e1e2;
+  font-size: 12px !important;
+}
+
+.navbar-collapse{
+  padding-right: 0px;
+}
+
+.nav-ul1{
+  margin-top: -1px;
+  margin-left: -1px;
+  margin-bottom: 0px;
+      border-bottom: 2px solid #f0f2f5;
+    border-right: 2px solid #f0f2f5; 
+  a{
+    min-height: 69px;
+    padding-top: 25px;
+  }
+}
+
+.navbar-inverse .navbar-nav&gt;.active&gt;a {
+  color: #ffb366;
+  background-color: #ffffff;  
+}
+/*.navbar-inverse .nav-ul1&gt; li:last-child {
+  margin-right: 75px;
+}*/
+
+.navbar-right{
+  color: #717171;
+  min-height: 69px;
+  padding-right: 0px;
+  
+}
+
+.red-text{
+  color: red;
+  margin-right: 0px;
+}
+
+.ellipsis-text{
+	overflow: hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:45px;
+  display:block;
+  margin-left: 10px;
+  z-index: 1;
+  position: absolute;
+}
+
+.ellipsis-text:hover{
+ 	overflow: visible;
+  white-space:nowrap;
+  text-overflow:visible;
+  display:block;
+  z-index: 1;
+  position: absolute;
+}
+
+.ul1-icon1{
+  margin-right: 15px;
+  padding-top: 27px;
+}
+
+.ul1-icon2{
+//  argin-right: 15px;
+  padding-top: 27px;
+}
+
+.header-second-div{
+  margin-top: -1px;
+  padding-right: 15px;
+}
+
+.progress-line-div{
+ 
+  padding-top: 0px;
+}
+
+#imageText2{
+  height: 72px;
+  color: #ffffff;
+  width: 100%;
+  background-color: #ed1c24;
+}
+
+#imageTextSpan{
+  float: right;
+  text-align: right;
+  padding: 10px 20px;
+  height: 36px;
+  border-bottom: 1px solid #d81c1c;
+  width: 100%;
+}
+
+#userIcon1{
+  
+  margin-right: 10px;
+}
+
+#imageText3{
+  margin-right: 10px;
+}
+#cartIcon{
+  margin-right: 10px;
+}
+
+.row-col-3{
+ padding-left: 0px; 
+   padding-right: 0px; 
+}
+
+.mobile-padding-left{
+  padding-left: 35px !important;
+}
+
+.ul1-icons-mobile{
+  padding-left: 55px !important;
+}
+.light-text{
+  color: #96999c;
+}
+
+.fa{
+  font-size: 18px;
+}
+.fa-user{
+  font-size: 32px;
+  color: #96999c;
+}
+
+.welcome-text{
+ display: inline-block;
+  margin-left: 10px;
+  margin-top: 7px;
+  margin-right: 2px;
+    
+}
+
+.right-header-nav{
+  padding-top: 10px;
+  padding-bottom: 5px !important;
+}
+
+
+
+
+ol.requestProgress[data-steps="3"] li { width: 30%; }
+
+.requestProgress {
+    width: 100%;
+    list-style: none;
+    list-style-image: none;
+    margin: 12px 0 20px 0;
+    padding: 0;
+  margin-left: 12%;
+}
+
+.requestProgress li {
+    float: left;
+    text-align: center;
+    position: relative;
+}
+
+.requestProgress .requestName {
+    display: block;
+    vertical-align: bottom;
+    text-align: center;
+    margin-bottom: 2px;     
+  font-size: 12px !important;
+}
+
+.requestProgress .requestStep {
+    color: black;
+    border: 1px solid #f0f2f5;
+    background-color: #f0f2f5;
+    border-radius: 50%;
+    line-height: 1.2;
+    width: 1.5em;
+    height: 1.5em;
+    display: inline-block;
+    z-index: 0;
+}
+
+.requestProgress .requestStep span {
+    //opacity: 0.3;
+}
+
+.requestProgress .active .requestName,
+.requestProgress .active .requestStep span {
+   // opacity: 1;
+}
+
+.requestProgress .requestStep:before {
+    content: "";
+    display: block;
+    background-color: #f0f2f5;
+    height: 3px;
+    width: 50%;
+    position: absolute;
+    bottom: 0.6em;
+    left: 0;
+    z-index: 0;
+}
+
+.requestProgress .requestStep:after {
+    content: "";
+    display: block;
+    background-color: #f0f2f5;
+    height:3px;
+    width: 50%;
+    position: absolute;
+    bottom: 0.6em;
+    right: 0;
+    z-index: 0;
+}
+
+.requestProgress .requestDone .request1,
+.requestProgress .requestDone .request1:before,
+.requestProgress .requestDone .request1:after,
+.requestProgress .requestDone .silver1:before
+ {
+    background-color: #1fabc4 !important;
+}
+
+.requestProgress .requestDone .requestStep,
+.requestProgress .active .requestStep {
+    border: 1px solid #1fabc4;
+  padding-top: 1px;
+}
+.white-text{
+  color: #ffffff;
+}
+
+.silver-text{
+  color: silver;  
+}
+.silver1{
+  background-color: #ffffff !important;
+  border: 1px solid #e0e6eb !important;
+}
+
+.silver2{
+  background-color: #ffffff !important;
+  border: 1px solid #e0e6eb !important;
+}
+
+.silver1:after, .silver2:before, .silver2:after{
+  background-color: #f0f2f5 !important;
+  width: 45% !important; 
+}
+.step1{
+  color: #1fabc4 !important;  
+}
+.silver1:before{
+   width: 45% !important; 
+}
+
+.request1:before, .request1:after{
+  width: 44% !important;  
+}
+.mobile-logout{
+  border-right: 1px solid #f0f2f5;
+  border-bottom: 1px solid #f0f2f5;
+  margin-top: 0px;
+}
+
+.screen-header{
+  border-left: 2px solid #f0f2f5;
+  border-right: 2px solid #f0f2f5;  
+  color: #1fabc4 !important;
+  font-size: 16px !important;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.screen-header:hover{ 
+  color: #1fabc4 !important;
+}
+.screen-header-mobile{
+  padding-top: 20px;
+}
+.header-container{
+  background-color: #ffffff;
+}
+
+.first-menu-item{
+  margin-left: 15px;
+}
+
+.userFace{
+  margin-right: 15px;
+  color:#96999c;
+  padding-bottom: 10px !important;
+  padding-top: 20px;
+}
+.last-menu-item{  
+  padding-right: 0px;
+}
+.toggle-menu-tray1{
+  margin-right: 30px !important;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>igiportaldashboardwidget</id>
+        <internal>false</internal>
+        <link/>
+        <name>igiPortalDashboardWidget</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	var session = gs.getSession();	
+	data.userName = session.getClientData('username');
+	if(input){
+		if(input.action == "logout"){
+			session.putClientData('authToken', "");
+			session.putClientData('username', "");
+		}
+	}
+})();
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-08-20 08:55:19</sys_created_on>
+        <sys_id>4aea6fd1db40230033c6fbef299619fd</sys_id>
+        <sys_mod_count>444</sys_mod_count>
+        <sys_name>igiPortalDashboardWidget</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_widget_4aea6fd1db40230033c6fbef299619fd</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-10-17 09:54:07</sys_updated_on>
+        <template><![CDATA[<div class="outermost-container">
+	<div class="row">
+  
+  <nav class="navbar navbar-inverse" id="mobile-menu-burger">
+  <div class="container-fluid">
+  	<div class="navbar-header">
+      <button type="button" class="navbar-toggle toggle-menu-tray1" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button> 
+      <a class="navbar-brand hidden-lg" href="#"><img src="yum_logo.png" width="63" height="53"/></a>     
+      <a class="navbar-brand hidden-lg  screen-header-mobile screen-header" href="#">REQUEST ACCESS</a>
+   </div> 
+   <div class="collapse navbar-collapse row" id="myNavbar">
+      <ul class="nav navbar-nav nav-ul1 col-lg-9 col-sm-7 col-xs-7">       
+        <li class="hidden-xs hidden-sm hidden-md"><a href="#" style="padding-top: 7px !important; padding-bottom: 5px !important;  padding-left: 30px !important; padding-right: 30px !important;"><img src="yum_logo.png" 
+
+width="63" height="53"/> </a></li>
+ 				<li> <a href="#" class="screen-header hidden-xs hidden-sm hidden-md">REQUEST ACCESS</a></li>
+        
+         <li ng-class="activeTab == 'ALL_CATALOGS' ? 'active' : 'inactive' "  ng-click="setActiveTab('ALL_CATALOGS')"><a class="hidden-xs hidden-sm hidden-md first-menu-item">ALL CATALOGS  
+
+</a> </li>
+        <li ng-class="activeTab == 'ALL_CATALOGS' ? 'active' : 'inactive' "  ng-click="setActiveTab('ALL_CATALOGS')" > <a class="mobile-padding-left 
+
+hidden-lg hidden-sm">ALL CATALOGS</a></li>
+        
+        <li ng-class="activeTab == 'USER_ACCOUNTS' ? 'active' : 'inactive' "  ng-click="setActiveTab('USER_ACCOUNTS')"><a href="#" class="hidden-xs">USER ACCOUNTS  
+
+</a> <a href="#" class="mobile-padding-left hidden-lg hidden-sm hidden-md">USER ACCOUNTS  </a></li>                
+        <li ng-class="activeTab == 'USER_ENTITLEMENTS' ? 'active' : 'inactive' "  ng-click="setActiveTab('USER_ENTITLEMENTS')"><a href="#" class="hidden-xs">USER 
+
+ENTITLEMENTS  </a> <a href="#" class="mobile-padding-left hidden-lg  hidden-sm hidden-md">USER ENTITLEMENTS  </a></li>        
+        
+        <li class="dropdown" ng-class="activeTab == 'REQUEST_ENTITLEMENTS' ? 'active' : 'inactive' "  ng-click="setActiveTab('REQUEST_ENTITLEMENTS')">
+          <a class="dropdown-toggle hidden-xs" data-toggle="dropdown" href="#">REQUEST ENTITLEMENTS </a>
+          <a class="dropdown-toggle mobile-padding-left hidden-lg  hidden-sm hidden-md" data-toggle="dropdown" href="#">REQUEST ENTITLEMENTS </a>         
+        </li>
+        <li class="dropdown" ng-class="activeTab == 'INCIDENTS' ? 'active' : 'inactive' "  ng-click="setActiveTab('INCIDENTS')">
+          <a class="dropdown-toggle hidden-xs last-menu-item" data-toggle="dropdown" href="#" ng-hide="true">INCIDENTS</a>
+          <a class="dropdown-toggle mobile-padding-left hidden-lg  hidden-sm hidden-md last-menu-item" data-toggle="dropdown" href="#" ng-hide="true">INCIDENTS</a>         
+        </li>
+       
+       
+        
+     </ul>
+     <ul class="nav navbar-nav navbar-right col-lg-3 col-sm-1 col-xs-9 col-md-2 hidden-xs">  
+        <li class="hidden-xs hidden-sm hidden-md"><a href="#" class="right-header-nav"><span class="light-text welcome-text">Welcome</span> <span class="red-text ellipsis-text"> {{data.userName}}</span> 
+          </a></li>
+       <li class="hidden-xs hidden-sm hidden-md"><a href="#" class="right-header-nav userFace light-text">
+          <i class="fa fa-user"></i></a></li>
+        <li><a href="#" class="ul1-icon1 hidden-xs hidden-sm light-text"> <i class="fa fa-cog light-text" ></i></a></li>        
+        <li ng-click = "logout()"><a  class="ul1-icon2 hidden-xs"><i class="fa fa-sign-out light-text"></i></a> </li>
+     </ul>     
+     <ul class="nav navbar-nav navbar-right col-lg-3 col-sm-1 col-xs-7 col-md-2 hidden-lg hidden-sm hidden-md mobile-logout">  
+        <li class="hidden-xs hidden-sm hidden-md"><a href="#" class="right-header-nav"><span class="light-text welcome-text">Welcome</span> <span class="red-text ellipsis-text"> {{data.userName}}</span> <img 
+
+src="userfaceIcon.jpg" width="33" height="35" style="border-radius: 7px;"/> </a></li>       
+        <li><a href="#" class="ul1-icons-mobile hidden-lg hidden-sm"> <i class="fa fa-cog light-text" ></i></a> </li>         
+        <li ng-click = "logout()"><a  class="ul1-icons-mobile hidden-lg hidden-sm hidden-md"><i class="fa fa-sign-out light-text"></i></a> </li>     
+     </ul>      
+   </div>
+  </div>
+	</nav>
+  
+  
+  <div class="header-container">
+  	<div class="row header-second-div">     
+      <div class="col-xs-9 col-md-7 col-lg-7 col-sm-12 progress-line-div hidden-xs hidden-sm">
+        <ol class="requestProgress" data-steps="3" ng-show="activeTab == 'REQUEST_ENTITLEMENTS'">
+          <li class="requestDone">
+              <span class="requestName step1">REQUEST ACCESS</span>
+              <span class="requestStep request1"><span class="white-text">1</span></span>
+          </li>
+          <li class="requestDone">
+              <span class="requestName light-text">REQUIRED INFORMATION</span>
+              <span class="requestStep silver1"><span class="silver-text">2</span></span>
+          </li>
+          <li class="active">
+              <span class="requestName light-text">SUBMIT</span>
+              <span class="requestStep silver2"><span class="silver-text">3</span></span>
+          </li>   
+      </ol>
+    </div>
+       
+       
+    <div class="col-xs-9 col-md-2 col-lg-2 col-sm-9" style="padding-right: 0; text-align: right;">
+      <span style="display: inline-block; color: #ffffff; float: right; text-align: right; margin-right: -7px;">       
+        <img src="curve_red_search_area.png" width="92" height="72"/>
+        
+        <div class="bottom-left">
+          <i class="fa fa-search" style="margin-right:5px"></i> ALL
+        </div>
+      </span>
+    </div>
+    <div class="col-xs-3 col-md-3 col-lg-3 col-sm-3 row-col-3">
+      <div id="imageText2">
+        <span id="imageTextSpan" ng-click="setActiveTab('VIEW_CART')">
+        	<i class="fa fa-user" id="userIcon1" ng-hide="true"></i>
+          <span id="imageText3" ng-hide="true">Smith T</span>
+          
+          <i class="fa fa-shopping-cart" id="cartIcon" ></i>
+          <span> {{ cart.length }}</span>
+       </span>
+       <div class="bottom-left1">
+          CATEGORIES
+       </div>
+     </div>
+   	</div>
+    </div>
+      
+      
+  </div>
+  </div>
+
+
+       <div class="row"> 
+          <div class="main-container" ng-if="activeTab == 'ALL_CATALOGS'" >
+  				<!-- <widget id="igiportalallcatalogswidget"></widget> -->
+            	
+            <div class="menu-desktop hidden-xs" ng-if="!mainCatalogPage" ng-click="backToMainCatalog()"><i class="fa fa-backward span-margin"></i>
+                    <span>Back </span>
+                  </div>
+                  <div class="catalog-container row wrap-text1"> 
+                    
+                    <div class="row catalog-category-container" ng-if="mainCatalogPage">					  
+					  <div class="col-lg-4" ng-repeat="item in allEntitlementsSubcategories()">
+                      
+                    
+                    <div class="h5 catalog-padding dark-text catalog-head1"  ng-click="catalogCategory(item)"><a> {{item}} </a></div> 
+                    <div  ng-click="catalogCategory(item)">
+                  <div class="panel panel-{{::options.color}} b catalog-padding">
+                    <a class="panel-body block">
+                      <div class="overflow-120 row">
+                        
+                        <div class="col-lg-4"> <h5 class="m-t-none m-b-xs dark-text catID"><span class="light-text">ID:</span> {{item.substr(0, 2).toUpperCase()}} 5419</h5> <img src="icon_active_directory.png" width="90" height="80" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-left catalogImage" /> </div>
+                        <div class="col-lg-8">
+						<div class="row">
+                        <!-- <div class="col-lg-3 text-muted item-short-desc">ID:<div class="dark-text"> {{item.id}}</div> </div> -->
+                        <div class="col-lg-12 text-muted item-short-desc">Name:<div class="dark-text">   {{item}}</div></div>
+                        
+                        <div class="col-lg-12 text-muted item-short-desc" style="margin-top: 20px">Description: <div class="dark-text">For {{item}} related access, select from this category</div></div>
+						</div>
+                        </div>                        
+                      </div>
+                    </a>
+                  </div>
+              </div>
+                        </div>
+                   </div> 
+					
+					<div class="h5 catalog-padding dark-text catalog-head2 cursorPointer" ng-if="!mainCatalogPage"><a ng-click="setActiveTab('REQUEST_ENTITLEMENTS')"> {{selectedSubcategory}} </a></div> 
+                    <div ng-repeat="item in allEntitlements | filter:{typeVal:selectedSubcategory}" ng-if="!mainCatalogPage" class="col-sm-6 col-md-4 col-lg-4">
+                  <div class="panel panel-{{::options.color}} b catalog-padding">
+                    <a ng-click="setActiveTab('REQUEST_ENTITLEMENTS')"  class="panel-body block cursorPointer">
+                      <div class="overflow-120 row">
+                        
+                        <div class="col-lg-4"> <h5 class="m-t-none m-b-xs dark-text catID"><span class="light-text">ID:</span> {{item.id}}</h5> <img src="icon_active_directory.png" width="90" height="80" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-left catalogImage" /> </div>
+                        <div class="col-lg-8">
+						<div class="row">
+                        <!-- <div class="col-lg-3 text-muted item-short-desc">ID:<div class="dark-text"> {{item.id}}</div> </div> -->
+                        <div class="col-lg-12 text-muted item-short-desc">Name:<div class="dark-text">  {{item["urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement"].name}}</div></div>
+                        
+                        <div class="col-lg-12 text-muted item-short-desc" style="margin-top: 20px">Description: <div class="dark-text">{{item["urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement"].description}}</div></div>
+						</div>
+                        </div>                        
+                      </div>
+                    </a>
+                  </div>
+
+              </div>
+            </div>
+                <div>
+                   <img src="bg_bottom_red.png" width="607" height="6"/>
+              </div>
+  				</div>
+         
+         
+         
+         
+         
+  <div class="main-container" ng-if="activeTab == 'USER_ACCOUNTS'">
+   <!-- <widget id="igiPortalUserAccounts" options='data.user'></widget> -->
+    <widget id="igiPortalUserAccounts"></widget>
+  </div>
+    
+  <div class="main-container" ng-if="activeTab == 'USER_ENTITLEMENTS'">
+    <!--<widget id="igiPortalUserEntitlements" options='data.userEntitlements'></widget>-->
+    <widget id="igiPortalUserEntitlements"></widget>
+  </div>
+    
+    <div class="main-container" ng-if="activeTab == 'REQUEST_ENTITLEMENTS'">
+    <!--<widget id="igiPortalAllEntitlements" options='data.allEntitlements'></widget>-->  
+  	<widget id="igiPortalAllEntitlements"></widget>
+  </div>
+    <div class="main-container" ng-if="activeTab == 'VIEW_CART'" >
+  	<widget id="igiportalcartwidget"></widget>
+  </div>
+  <div class="main-container" ng-if="activeTab == 'INCIDENTS'" >
+      <widget id="igiincidentwidget"></widget>
+  </div>
+        
+         
+  </div>
+  
+  
+
+</div>
+
+]]></template>
+    </sp_widget>
+</record_update>

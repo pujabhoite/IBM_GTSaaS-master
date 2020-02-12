@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope,igiMenuService) {
+	var c = this;
+  $scope.userEntitlements = "";
+	$scope.data.action = "getUserEntitlements";
+	console.log("IGI user entitlements client script:");
+	$scope.$watch(function(){
+		return igiMenuService.userEntitlements;
+	}, function (newValue, oldValue) {
+		if(typeof newValue == 'object' && "resources" in newValue)
+			$scope.userEntitlements = newValue.resources;
+  });
+		$scope.set_borderColor = function (index) {
+		if (index % 4 == 0) {
+			return { "border-left" : "5px solid #4ecbe4" }
+		}else
+		if (index % 4 == 1) {
+			return { "border-left" : "5px solid #ff704d" }
+		}
+		else
+		if (index % 4 == 2) {
+			return { "border-left" : "5px solid #ff944d" }
+		}
+		else
+		if (index % 4 == 3) {
+			return { "border-left" : "5px solid #ffb366" }
+		}
+	}
+	}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.main-container{
+  background-color: #f2f2f2; 
+}
+.span-margin{
+  margin-right: 10px;
+  padding-left: 10px
+}
+.pull-right{
+	float: right;  
+}
+.main-content-div{
+  margin: 0px 40px 10px 0px;
+  padding-bottom: 50px;
+}
+.accesses-list{
+  list-style: none;
+  min-height: 300px;
+}
+.light-text{
+  color: #96999c;
+}
+
+.dark-text{
+  color: #000000;
+}
+
+.content-row{
+  background-color: #ffffff;
+  margin-bottom: 4px;
+  border-radius: 6px;
+ // border-left: 5px solid #4ecbe4;
+  //box-shadow: 0px 1px 4px #e0e0e2, 0px -3px 10px #e0e0e2; 
+  padding-bottom: 15px; 
+}
+
+.accesses-list li:first-child{
+ box-shadow: 0px 1px 4px #e0e0e2, 0px -3px 10px #e0e0e2;
+}
+
+
+.accesses-list{
+  list-style: none;
+}
+
+.border-left{
+  border-left: 1px solid #bdbfc1;
+}
+
+.sort-arrow-margin{
+  margin-left: 7px;
+}
+
+.colored-icons{
+  color: #1fabc4;
+ 
+}
+
+.menu-desktop{
+  padding-top: 30px !important;
+  padding-left: 15px !important;
+  border-bottom: 1px solid #f0f2f5; padding: 5px;
+}
+.wrap-text1{
+  word-wrap: break-word;
+}
+.right-text1{
+  padding-right: 10px;
+}
+
+.text-col-2{
+  padding-top: 15px;
+}
+
+.light-additional-text{
+  padding-top: 10px;
+  padding-bottom: 15px;
+}
+#imageDiv{
+  padding-top: 15px;
+}
+
+.light-description{
+   padding-top: 15px;
+}
+
+.access-description{
+  padding-top: 10px;
+}
+
+#plusicon1{
+  text-align: right;
+}
+
+.row-col-3{
+ padding-left: 0px; 
+}
+ 
+.colored-background{
+  background-color: #e6edef;
+}
+
+.dropdown-for-mobile{
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-left: 25px;
+}
+
+.additional-info{
+  margin-top: 20px;
+  border-top: 1px solid #f0f1f2;
+}
+  </css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>igiPortalUserEntitlements</id>
+        <internal>false</internal>
+        <link/>
+        <name>igiPortalUserEntitlements</name>
+        <option_schema/>
+        <public>true</public>
+        <roles>admin</roles>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-08-09 06:01:03</sys_created_on>
+        <sys_id>a0a9923ddb33130033c6fbef29961908</sys_id>
+        <sys_mod_count>57</sys_mod_count>
+        <sys_name>igiPortalUserEntitlements</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_widget_a0a9923ddb33130033c6fbef29961908</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-10-12 10:48:09</sys_updated_on>
+        <template><![CDATA[<div class="main-container"> 	
+<div class="menu-desktop hidden-xs hidden-sm hidden-md">
+        <span class="span-margin">Sort by: </span>
+        <span class="span-margin">Name <span class="dropup">
+    <span class="caret"></span>
+</span></span>
+        <span class="span-margin border-left">Description</span>
+        <span class="span-margin border-left wrap-text1" >Additional Information</span>
+        <!--<span class="pull-right right-text1">1 to 4 of 4</span>-->
+        
+      </div>
+  
+  	<div id="mainContainerText" class="hidden-lg">
+      <div class="dropdown dropdown-for-mobile">
+  <button class="colored-background dropdown-toggle" type="button" data-toggle="dropdown">Sort by:
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><a href="#">Name</a></li>
+    <li><a href="#">Description</a></li>
+    <li><a href="#">Additional Information</a></li>
+  </ul>
+</div>
+  </div>
+  
+  
+      <div class="main-content-div">        
+        <ul class="accesses-list">
+          <li ng-repeat="item in userEntitlements" class="align-baseline">
+            <div class="row content-row" ng-style="set_borderColor($index)">
+            <div class="col-xs-4 col-md-2 col-lg-2 col-sm-3 text-col-2" >                       
+                <span class="dark-text" > {{item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].name}} </span>
+              	<div class="light-text light-additional-text">ID: {{item.id}} </div>
+            	</div>              
+              
+              <div class="col-xs-2 col-md-2 col-lg-2 col-sm-2 hidden-xs" id="imageDiv" >          
+                <img src="icon_active_directory.png" width="90" height="80"/>
+            	</div>
+              
+              <div class="col-xs-8 col-md-8 col-lg-8 col-sm-6" >
+                
+                  <div class="light-text light-description">Entitlement Name:</div>
+                   <div class="row">
+                  
+                <div class="dark-text col-lg-12 col-sm-12 col-xs-12 access-description"> 
+                  {{item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].name}}
+               <div class="row additional-info">
+                 <div class="dark-text col-lg-3 col-sm-6 col-xs-6 col-md-6 access-description"> 
+                   <span class="light-text">Group Name:</span> <span class="row">{{item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].group_name}}</span>
+                 </div>
+                   <div class="dark-text col-lg-3 col-sm-6 col-xs-12 col-md-6 access-description"> 
+                     <span class="light-text">Group Description:</span> <span class="row">{{item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].group_description}}</span>
+                 </div>
+                 <div class="dark-text col-lg-3 col-sm-6 col-xs-12 col-md-6 access-description"> 
+                   <span class="light-text">Hietarchy Name:</span> <span class="row">{{item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].hierarchy_name}}</span>
+                 </div> 
+                 <div class="dark-text col-lg-3 col-sm-6 col-xs-12 col-md-6 access-description"> 
+                   <span class="light-text">Type:</span> <span class="row">{{item.typeVal}}</span>
+                 </div>
+                 
+                </div>
+                  
+                </div>
+                 
+                
+              </div>
+                 
+               
+				 
+                
+            	</div>
+				
+            	</div>
+				
+				
+            </li>
+          </ul>
+        </div>
+  	<div>
+       <img src="bg_bottom_red.png" width="607" height="6"/>
+  </div>
+</div>
+
+<!--<div class="accounts" ng-click="userEntitlementsDetails()">
+  <div class= "count">{{userEntitlementsCount}}</div>
+  <div class="account-details">
+  	<div>User Entitlements</div>
+    <div></div>
+  </div>
+</div>
+<table ng-if="showDetails">
+  <tr>
+    <th>Id</th>
+    <th>Entitlement Name</th>
+  </tr>
+  <tr ng-repeat="item in userEntitlements">
+    <td>{{item.id}}</td>
+    <td>{{item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].name}}</td>
+  </tr>
+</table>-->
+]]></template>
+    </sp_widget>
+</record_update>

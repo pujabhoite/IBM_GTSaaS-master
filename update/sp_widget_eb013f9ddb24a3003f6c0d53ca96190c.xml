@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope, $location, igiMenuService) {
+	var c = this;
+	  $scope.allEntitlements = "";
+	$scope.$watch(function(){
+		return igiMenuService.allEntitlements;
+	}, function (newValue, oldValue) {
+		if(typeof newValue == 'object' && "resources" in newValue)
+			$scope.allEntitlements = newValue.resources;
+  });
+	
+	addItemsToCategories(c.data.categories, c.data.items);
+	function addItemsToCategories(cats, items) {
+		cats.forEach(function(cat) {
+			cat.items = [];
+			items.forEach(function (item) {
+				if (item.category != cat.sys_id)
+					return; 
+				
+				cat.items.push(item);
+			})
+		})
+	}
+	
+	
+	/*=============== Begin link handling ===============*/
+	$scope.onClick = function($event, item) {
+		var lp = getLinkParts(item);
+		if (typeof lp == "string")
+			return; // can't intercept/redirect external content item
+
+		$event.stopPropagation();
+		$event.preventDefault();
+		var evt = {item: item, search: lp};
+
+		// This will let a wrapper widget intercept and redirect somewhere else
+		$scope.$emit($scope.options.click_event_name, evt);
+	};
+
+	function getLinkParts(item) {
+		if (item.sys_class_name == 'sc_cat_item_content' && item.content_type == 'external')
+			return item.url;
+
+		return {id: item.page, sys_id: item.sys_id};
+	}
+
+	$scope.getItemHREF = function(item) {
+		var lp = getLinkParts(item);
+		if (typeof lp == "string")
+			return lp;
+
+		return "?id=" + lp.id + "&sys_id=" + lp.sys_id;
+	}
+
+	var unregister = $rootScope.$on($scope.options.click_event_name, function($event, o) {
+		if ("url" in o)
+			$location.href = o.url;
+		else
+			$location.search(o.search);
+	});
+
+	$scope.$on("$destroy", function() {
+		unregister();
+	});
+	
+	/*=============== End link handling ===============*/
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.main-container{
+  background-color: #f2f2f2; 
+}
+
+.catalog-container{
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.menu-desktop{
+  padding-top: 30px !important;
+  padding-left: 15px !important;
+  border-bottom: 1px solid #f0f2f5; padding: 5px;
+}
+.span-margin{
+  margin-right: 10px;
+  padding-left: 10px
+}
+.border-left{
+  border-left: 1px solid #bdbfc1;
+}
+
+.colored-background{
+  background-color: #e6edef;
+}
+.dropdown-for-mobile{
+  margin-top: 5px;
+}
+
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>To show all catalogs (all entitlements to select from)</description>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>igiportalallcatalogswidget</id>
+        <internal>false</internal>
+        <link/>
+        <name>igiPortalAllCatalogsWidget</name>
+        <option_schema/>
+        <public>false</public>
+        <roles>admin</roles>
+        <script><![CDATA[(function() {
+	var cat = $sp.getParameter('sc_catalog');
+	if (!cat)
+		cat = $sp.getValue("sc_catalog");  // portal catalog
+	var gr = new GlideRecord('sc_catalog', cat);
+	gr.get(cat);
+	data.cat = cat;
+	data.title = gr.getValue("title");
+	data.categories = getCategories(cat);
+	data.items = getItems(cat);
+	data.sc_category_page = $sp.getDisplayValue("sc_category_page") || "sc_category";
+
+	function getItems(cat) {
+		var gr = new GlideRecord('sc_cat_item');
+		gr.addQuery('sc_catalogs', cat);
+		gr.addActiveQuery();
+		gr.orderBy('name');
+		gr.query();
+		var items = [];
+		while (gr.next()) {
+			if (!$sp.canReadRecord("sc_cat_item", gr.getUniqueValue()))
+				continue;
+
+			var c = {};
+			$sp.getRecordValues(c,gr,'sys_id,name,short_description,category,sys_class_name');
+			$sp.getRecordDisplayValues(c, gr, 'picture');
+			c.page = 'sc_cat_item';
+			if (c.sys_class_name == 'sc_cat_item_guide') 
+				c.page = 'sc_cat_item_guide';
+			items.push(c);
+		}
+		return items;
+	}
+
+	function getCategories(cat) {
+		var gr = new GlideRecord('sc_category');
+		gr.addQuery('sc_catalog', cat);
+		gr.addActiveQuery();
+		gr.orderBy('title');
+		gr.query();
+		var cats = [];
+		while (gr.next()) {
+			if (!$sp.canReadRecord("sc_category", gr.getUniqueValue()))
+				continue;
+
+			var c = {};
+			$sp.getRecordValues(c,gr,'sys_id,title,parent');
+			cats.push(c);
+		}
+		return cats;
+	}
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-14 05:54:17</sys_created_on>
+        <sys_id>eb013f9ddb24a3003f6c0d53ca96190c</sys_id>
+        <sys_mod_count>22</sys_mod_count>
+        <sys_name>igiPortalAllCatalogsWidget</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_widget_eb013f9ddb24a3003f6c0d53ca96190c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-14 06:51:25</sys_updated_on>
+        <template><![CDATA[<div class="main-container"> 	
+<div class="menu-desktop hidden-xs">
+        <span class="span-margin">Sort by: </span>
+        <span class="span-margin">Name <span class="dropup">
+    <span class="caret"></span>
+</span></span>
+        <span class="span-margin border-left">Description</span>
+        <span class="span-margin border-left wrap-text1" >Additional Information</span>
+        <!--<span class="pull-right right-text1">1 to 4 of 4</span>-->
+        
+      </div>
+  
+  	<div id="mainContainerText" class="hidden-lg">
+      <div class="dropdown dropdown-for-mobile">
+  <button class="colored-background dropdown-toggle" type="button" data-toggle="dropdown">Sort by:
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    <li><a href="#">Name</a></li>
+    <li><a href="#">Description</a></li>
+    <li><a href="#">Additional Information</a></li>
+  </ul>
+</div>
+  </div>
+  
+  
+      <div class="catalog-container row">        
+	  <div ng-repeat="item in allEntitlements"  class="col-sm-6 col-md-4 col-lg-4">
+  
+  <div class="h4 catalog-padding"><a ng-href="?id=igiportaldashboardpage"> {{item["urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement"].name}} </a></div> 
+ 
+    
+      <div class="panel panel-{{::options.color}} b catalog-padding">
+        <a href="?id=igiportaldashboardpage"  class="panel-body block">
+          <div class="overflow-100">
+            <h4 class="m-t-none m-b-xs">{{item.id}}</h4>
+            <img ng-src="{{::item.picture}}" ng-if="::item.picture" alt="{{::item.name}}" class="m-r-sm m-b-sm item-image pull-left" />
+            <div class="text-muted item-short-desc">{{item["urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement"].description}}</div>
+          </div>
+        </a>
+      </div>
+    
+  </div>
+
+    
+        </div>
+  	<div>
+       <img src="bg_bottom_red.png" width="607" height="6"/>
+  </div>
+</div>]]></template>
+    </sp_widget>
+</record_update>

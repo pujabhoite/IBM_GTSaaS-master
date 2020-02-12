@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope,igiAuthService) {
+  /* widget controller */
+  var c = this;
+	$scope.username = "";
+	$scope.password = "";
+	$scope.errorMessage = "";
+	$scope.errorFlag = false;
+	$scope.login = function (){
+		$scope.errorMessage = "";
+		console.log("IGI login client script");
+		if($scope.username == "" || $scope.username == undefined)
+		{
+			$scope.errorMessage = "Please enter the username";
+			$scope.username = "";
+			$scope.password = "";
+			$scope.errorFlag = true;
+		}
+		else if($scope.password == "" || $scope.password == undefined){
+			$scope.errorMessage = "Please enter the password";
+			$scope.username = "";
+			$scope.password = "";
+			$scope.errorFlag = true;
+		}
+		else{	
+		$scope.errorFlag = false;
+		var authPromise = igiAuthService.authenticate($scope.username,$scope.password);
+		authPromise.then(function(response){
+			var res = response.data.result.response;
+			if ("errorcode" in res && res.errorcode == "igi.authentication.invalidvalue") {
+				$scope.errorMessage = "Invalid username/password";  
+				$scope.errorFlag = true;
+				$scope.username = "";
+				$scope.password = "";
+			}
+			else if("errorcode" in res && res.errorcode == "igi.authentication.wrong_password"){
+				$scope.errorMessage = "Invalid password";
+				$scope.errorFlag = true;				
+				$scope.username = "";
+				$scope.password = "";
+			}
+			else if("errorcode" in res && res.errorcode == "igi.authentication.error.excessive_wrong_password"){
+				$scope.errorMessage = "Maximum password attempts reached!Contact System Administrator";
+				$scope.errorFlag = true;				
+				$scope.username = "";
+				$scope.password = "";
+			}
+			else if("key" in res && "value" in res){
+				$scope.errorMessage = null;
+				window.location = "?id=igiportaldashboardpage";
+				console.log("Received auth token");
+				$scope.errorFlag = false;
+			}
+		})
+		}	
+	}
+	$scope.signup = function(){
+		window.location = "?id=igiportalsignuppage";
+	}
+
+	}
+]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.login{
+  background-color : white;
+  display : flex;
+  flex-direction: row;
+  margin-top:-12px;
+  .login-box, .login-bg-img{
+  	flex:1;
+    display:flex;
+  }
+  .login-bg-img{
+        display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-box-orient: horizontal; 
+    -moz-box-orient: horizontal;
+    box-orient: horizontal;
+    flex-direction: row;
+
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    box-pack: center;
+    justify-content: center;
+
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    box-align: center;  
+    align-items: center;
+    div{
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto; 
+
+    padding: 10px;
+    margin: 10px;
+		margin-top: -10px;
+    margin-right: -10px;
+    text-align: center;
+      img{
+        width: 100%;
+      }
+    }
+  }
+  .login-box{
+    display : flex;
+    flex-direction :column;
+    min-height: 177px;
+    .login-top,.login-bottom{
+    	flex:1;
+    }
+    .login-top{
+      display: flex;
+    	align-items: center;
+    	justify-content: center;
+      min-height: 180px;
+    }
+    .login-bottom{
+      .login-form{
+        padding: 0 60px;
+        display : flex;
+        justify-content : center;
+        .form-submit{
+          display : flex;
+          flex-direction : row;
+          align-items : center;
+          padding-top : 20px;
+          .login-button{
+            margin-left : auto;
+            button{
+              width: 100px;
+              background-color: #69b089;
+              color : white;
+            }
+          }
+
+        }
+      }
+    }
+    
+  }
+  .inner-addon { 
+      position: relative; 
+    	min-width : 400px;
+    	display : flex;
+    	align-items : center;
+    	margin-top : 40px;
+  }
+  /* style icon */
+.inner-addon .glyphicon,.inner-addon .forgot,.inner-addon .animate-label {
+  position: absolute;
+  pointer-events: none;
+}
+  .inner-addon .glyphicon{
+  padding: 10px;
+  }
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.left-addon .animate-label  { 
+  left:  0px;
+	padding-left :30px;
+  min-width : 90px;
+  text-align: center;
+}
+//.right-addon .glyphicon { right: 0px;}
+.right-addon .forgot { right: 0px;}
+.forgot{
+	padding-top:0px;
+  padding-bottom:0px;
+  padding-right: 20px;
+  padding-left: 20px;
+  border-left-width:1px;
+  border-left-style:solid;
+  border-color: darkgray;
+  color: #2d83c4;
+}
+  .signup{
+   color: #2d83c4;
+  }
+  input{
+  	height: 40px;
+  }
+/* add padding  */
+.left-addon input  { 
+  padding-left:  30px;   
+  padding-right: 100px !important 
+}
+.right-addon input { padding-right: 30px; }
+  .animate-label{
+    transition:0.2s ease all; 
+  }
+  input:focus,input:valid{
+  	border: 1px solid #69b089;
+  	background-color:#e8e9eb;
+  }
+  input:focus ~ .animate-label, input:valid ~ .animate-label{
+    top:-15px;
+    font-size:14px;
+    color:white;
+    background-color : #69b089;
+    padding-left:0px;
+    margin-left: 10px;
+    border: 1px solid;
+    border-radius: 6px;
+  }
+}
+.error-msg{
+	color : red !important;
+}
+.error-msg-bg{
+	background-color : red !important;
+}
+.error-msg-border{
+	border-color: red !important;
+}
+input:-webkit-autofill {
+     -webkit-box-shadow: 0 0 0 1000px #e8e9eb inset !important;
+}
+@media only screen  and (max-width : 1030px) {
+  .login-bg-img{
+  	display : none;
+  }
+  .login-bottom{
+    padding-top : 30px; 
+  }
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>igiportalloginwidget</id>
+        <internal>false</internal>
+        <link/>
+        <name>igiPortalLogin</name>
+        <option_schema/>
+        <public>true</public>
+        <roles>admin</roles>
+        <script><![CDATA[(function() {
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-08-09 05:59:35</sys_created_on>
+        <sys_id>f249523ddb33130033c6fbef299619d0</sys_id>
+        <sys_mod_count>293</sys_mod_count>
+        <sys_name>igiPortalLogin</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_widget_f249523ddb33130033c6fbef299619d0</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-11-07 08:54:22</sys_updated_on>
+        <template><![CDATA[<div class="login">
+	<div class="login-box">
+  	<div class="login-top">
+      <div>
+      	<img src="logo_login.png">
+      </div>
+    </div>
+    <div class="login-bottom">
+      <div class="login-form">
+        <div class="form-group">
+         <!-- <label for="usr">User name</label>-->
+          <div class="inner-addon left-addon">
+              <i class="glyphicon glyphicon-user"></i>
+              <input type="text" class="form-control"  ng-model="username" ng-init="focusUsername = false" ng-focus="focusUsername = true"  ng-blur="focusUsername = false" ng-class="{'error-msg-border':(errorFlag == true && focusUsername )|| (errorFlag == true && username.length)}" required />
+              <label class="animate-label" ng-class="{'error-msg-bg':(errorFlag == true && focusUsername )|| (errorFlag == true && username.length)}">User name</label>
+          </div>
+          <div class="inner-addon left-addon right-addon">
+              <i class="glyphicon glyphicon-lock"></i>
+              <input type="password" class="form-control" ng-model="password" ng-init="focusPassword = false" ng-focus="focusPassword = true" ng-blur="focusPassword = false"  ng-class="{'error-msg-border':(errorFlag == true && focusPassword) || (errorFlag == true && password.length)}" required/>
+              <label class="animate-label" ng-class="{'error-msg-bg':(errorFlag == true && focusPassword) || (errorFlag == true && password.length)}">Password</label>
+            	<label class="forgot" ng-class="{'error-msg':errorFlag == true}">Forgot?</label>
+          </div>
+          <div class="form-submit">
+            <div>
+              <label>No account? </label>
+            </div>
+            <div>
+              <label class="signup" ng-class="{'error-msg':errorFlag == true}" ng-click="signup()">&nbsp;&nbsp;Signup</label>
+            </div>
+            <div class="login-button">
+              <button type="button" class="btn" ng-click="login()" ng-class="{'error-msg-bg':errorFlag == true}">Login</button>
+            </div>
+          </div>
+           <div class="error-msg" ng-if="errorMessage!=''">{{errorMessage}}</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="login-bg-img hidden-md hidden-xs" >
+    <div>
+    	<img src="login_bg.png">
+    </div>
+  </div>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

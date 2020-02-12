@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope,igiMenuService,igiEntitlementsService,$uibModal,$q) {
+	var c = this;
+	$scope.incidentCategories = ["Access1", "Access2", "Access3"];
+	$scope.incidentStates = ["New", "In Progress", "Closed", "cancel"];	
+	$scope.incidentImpacts = ["High", "Medium", "Low"];	
+	$scope.incidentUrgencies = ["High", "Medium", "Low"];
+	
+	$scope.incidentCategory = '';
+	$scope.incidentState = '';
+	$scope.incidentSubCategory = '';
+	$scope.incidentImpact = '';
+	$scope.incidentBusinessService = '';
+	$scope.incidentUrgency = '';
+	
+	$scope.incidentJustification = '';
+	$scope.incidentDescription = '';	
+	
+	
+	$scope.allEntitlements = "";
+	$scope.$watch(function(){
+		return igiMenuService.allEntitlements;
+	}, function (newValue, oldValue) {
+		if(typeof newValue == 'object' && "resources" in newValue)
+			$scope.allEntitlements = newValue.resources;
+  });
+	
+	$scope.allEntitlementsSubcategories = function(){
+		var allSubcategories = [];
+		for(var i = 0 ; i < $scope.allEntitlements.length; i++){
+			if(!allSubcategories.includes($scope.allEntitlements[i].typeVal))
+			allSubcategories.push($scope.allEntitlements[i].typeVal);
+		}
+		return allSubcategories;
+	}
+	
+	$scope.submitIncident = function(){
+		$scope.incidentToSubmit = {};
+		$scope.incidentToSubmit.incidentCategory = $scope.incidentCategory;
+		$scope.incidentToSubmit.incidentState = $scope.incidentState;
+		$scope.incidentToSubmit.incidentSubCategory = $scope.incidentSubCategory;
+		$scope.incidentToSubmit.incidentImpact = $scope.incidentImpact;
+		$scope.incidentToSubmit.incidentBusinessService = $scope.incidentBusinessService;
+		$scope.incidentToSubmit.incidentUrgency = $scope.incidentUrgency;
+		$scope.incidentToSubmit.incidentJustification = $scope.incidentJustification;
+		$scope.incidentToSubmit.incidentDescription = $scope.incidentDescription;
+		
+		console.log("Submit incident",JSON.stringify($scope.incidentToSubmit));
+		$scope.openModal();
+		
+	}
+	
+	$scope.openModal = function() {
+			$scope.modalInstance = $uibModal.open({
+					templateUrl: 'modalTemplate',
+					windowClass: 'addCartModal',
+					scope: $scope
+			});
+			igiMenuService.emptyCart();
+			$scope.disable = false;
+		}
+		$scope.closeModal = function() {
+			$scope.modalInstance.close();
+		}
+	
+	
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.main-container{
+  background-color: #f2f2f2; 
+  
+}
+
+.main-content-div{
+ // margin: 0px 40px 30px 0px;
+  padding-bottom: 50px; 
+}
+
+.light-text{
+  color: #96999c;
+}
+
+.dark-text{
+  color: #000000;
+}
+
+.incident-details{
+  margin-top: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.incident-details1{
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #ffffff;
+}
+.details-row{
+ margin-top: 15px;
+ margin-bottom: 15px;
+}
+.details-column1{
+  margin-top: 5px;
+  text-align: right;
+  padding-right: 10px;
+  //float: left;
+}
+.details-column2{
+ margin-top: 15px;
+ margin-bottom: 15px; 
+}
+.description-column{
+  text-align: right;
+  padding-right: 10px;
+}
+.description-input{
+  padding-left:10px; 
+  width:93%;
+}
+.details-select{
+  width: 90%;
+  border-radius: 4px;
+  height: 30px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  
+}
+.details-input{
+  width: 93%;
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #a9a9a9;
+}
+.margin-top-column{
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+.buttons-container{
+  text-align: center;
+  margin-top: 15px;
+}
+.records{
+  background-color: #ffffff;
+  box-shadow: 0px 1px 4px #e0e0e2, 0px -3px 10px #e0e0e2;
+}
+.description-adj{
+  padding-left: 10px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description>Widget to manage incidents</description>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>igiincidentwidget</id>
+        <internal>false</internal>
+        <link/>
+        <name>igiIncidentWidget</name>
+        <option_schema/>
+        <public>false</public>
+        <roles>admin</roles>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-19 06:25:34</sys_created_on>
+        <sys_id>11a7e90bdba823003f6c0d53ca9619d7</sys_id>
+        <sys_mod_count>145</sys_mod_count>
+        <sys_name>igiIncidentWidget</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_widget_11a7e90bdba823003f6c0d53ca9619d7</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-21 09:49:38</sys_updated_on>
+        <template><![CDATA[<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-filter/0.5.8/angular-filter.min.js"></script>
+<div class="main-container"> 
+    <div class="main-content-div container"> 
+	<div class="records">	
+      <div class="row incident-details">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 details-column1">          
+            Category
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">          
+            <select class="details-select"  ng-model="incidentCategory" ng-options="category for category in incidentCategories">
+              <option value="" selected>-- None --</option>
+            </select>
+          </div>
+        </div>
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 details-column1">          
+            State
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">                    
+            <select class="details-select" ng-model="incidentState" ng-options="state for state in incidentStates">
+              <option value="" selected>-- None --</option>
+            </select>
+          </div>
+        </div>
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 details-column1">          
+            Subcategory
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">           
+            <select class="details-select" ng-model="incidentSubCategory" ng-options="item as item for item in allEntitlementsSubcategories()">
+              <option value="" selected>-- None --</option>
+            </select>
+          </div>
+        </div>
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 details-column1">          
+            Impact
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">           
+            <select class="details-select" ng-model="incidentImpact" ng-options="impact for impact in incidentImpacts">
+              <option value="" selected>-- None --</option>
+            </select>
+          </div>
+        </div>
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 details-column1">          
+            Business Service
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">           
+            <select class="details-select" ng-model="incidentBusinessService" value="item"  ng-options="item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].name as item['urn:ibm:params:scim:schemas:extension:bean:agc:2.0:Entitlement'].name for item in allEntitlements | filter:{typeVal:incidentSubCategory}">
+              <option value="" selected>-- None --</option>
+            </select>
+          </div>
+        </div>
+		<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 details-column1">          
+            Urgency
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">           
+            <select class="details-select" ng-model="incidentUrgency" ng-options="urgency for urgency in incidentUrgencies">
+              <option value="" selected>-- None --</option>
+            </select>
+          </div>
+        </div>
+		
+		
+      </div>
+	  <div class="row incident-details1">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4 details-column1">          
+            Justification
+          </div>
+          <div class="col-lg-10 col-md-10 col-sm-8 col-xs-8 description-adj">           
+            <input class="details-input" ng-model="incidentJustification" type="text"/>
+          </div>
+        </div>
+	  
+	  
+	  
+	  </div>
+    <div class="row incident-details1">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row details-row">          
+          <div class="col-lg-2 col-md-2 col-sm-4 col-xs-4 details-column1">          
+            Description
+          </div>
+          <div class="col-lg-10 col-md-10 col-sm-8 col-xs-8 description-adj">           
+            <input class="details-input" ng-model="incidentDescription" type="text"/>
+          </div>
+        </div>
+	  
+	  
+	  
+	  </div>
+		</div>
+      <div class="buttons-container">
+      	<button type="button" class="btn btn-success" ng-click="submitIncident()">Submit</button>  
+      </div>
+      
+	  
+		  
+	 
+      
+      
+    </div>
+  	<div>
+       <img src="bg_bottom_red.png" width="607" height="6"/>
+		</div>
+  <script type="text/ng-template" id="modalTemplate">
+  <div class="modal-header">
+    <h3 class="modal-title" >Incident Details</h3>
+  </div>
+
+  <div class="modal-body">
+     <div> Incident submitted successfully.</div>
+  </div>
+
+  <div class="modal-footer" style="border :none;">
+      <button class="btn btn-primary" type="button" ng-click="closeModal()" style="      background-color: #69b089; color:white; min-width : 100px;">OK</button>
+  </div>
+  </script>
+</div>
+]]></template>
+    </sp_widget>
+</record_update>

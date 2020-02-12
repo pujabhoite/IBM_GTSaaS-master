@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl/>
+        <http_method>POST</http_method>
+        <name>igiLogin</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+    var json = new global.JSON();
+	var req = new sn_ws.RESTMessageV2();
+	var session = gs.getSession();
+		
+	var postData = request.body.data;
+	postData = json.encode(postData);
+	session.putClientData('username', (request.body.data.username).toString()); 
+	
+	req.setEndpoint("https://ibm-igi-mobileqa.persistent.com/api/v1/auth/authenticate");
+	req.setHttpMethod('post');
+	req.setRequestHeader("Accept","application/json");
+	req.setRequestHeader('Content-Type','application/json');
+	req.setRequestBody(postData);
+	
+	var res = req.execute();
+	var res0 =res.getBody();
+	var res1 = res0.toString();
+	var res2 = json.decode(res1);
+	if("key" in res2.response && "value" in res2.response){
+		session.putClientData('authToken', (res2.response.value).toString());
+	}
+	response.setBody(res2);
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_263474_igiportal/igilogin</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/</relative_path>
+        <request_example/>
+        <requires_acl_authorization>false</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-09-12 06:49:59</sys_created_on>
+        <sys_id>37a7ad70db28230033c6fbef299619cd</sys_id>
+        <sys_mod_count>33</sys_mod_count>
+        <sys_name>igiLogin</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sys_ws_operation_37a7ad70db28230033c6fbef299619cd</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-09-20 08:26:07</sys_updated_on>
+        <web_service_definition display_value="igiLogin">f4976d70db28230033c6fbef299619a8</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

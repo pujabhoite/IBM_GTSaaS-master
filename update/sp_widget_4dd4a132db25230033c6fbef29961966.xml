@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <client_script><![CDATA[function($scope,igiAccountsService) {
+  /* widget controller */
+  var c = this;
+	$scope.user = {
+		"userName" : "",
+		"password" : ""
+	};
+	$scope.errorFlag = false;
+	$scope.errorMsg = "";
+	$scope.successMsg = "";
+	$scope.emailErrMsg = false;
+	$scope.pwdErrMsg = false;
+	
+	$scope.pressKeyEmail = function(){
+		$scope.errorFlag = false;
+		$scope.errorMsg = "";
+		if($scope.user.userName == "" ||$scope.user.userName == undefined){
+			$scope.emailErrMsg = true;
+			$scope.pwdErrMsg = false;
+		}
+		else{
+			$scope.emailErrMsg = false;
+			$scope.pwdErrMsg = false;
+		}
+	}
+	
+		$scope.pressKeyPass = function(){
+			$scope.errorFlag = false;
+			$scope.errorMsg = "";
+			if($scope.user.password == "" ||$scope.user.password == undefined){
+				$scope.emailErrMsg = false;
+				$scope.pwdErrMsg = true;
+			}
+			else{
+				$scope.emailErrMsg = false;
+				$scope.pwdErrMsg = false;
+			}
+	}
+	
+	$scope.register = function(){		
+		if($scope.user.userName == "" ||$scope.user.userName == undefined){
+			$scope.emailErrMsg = true;
+			$scope.pwdErrMsg = false;
+		}
+		else if($scope.user.password == "" ||$scope.user.password == undefined){
+			$scope.emailErrMsg = false;
+			$scope.pwdErrMsg = true;
+		}
+		else if(!grecaptcha.getResponse()){
+      $scope.captchaErrMsg = true;
+		}
+		else{
+			$scope.user.emailId = $scope.user.userName;
+		$scope.captchaErrMsg = false;
+		$scope.emailErrMsg = false;
+		$scope.pwdErrMsg = false;
+		$scope.errorFlag = false;
+		$scope.errorMsg = "";
+		$scope.successMsg = "";
+		console.log($scope.user);
+		
+		var registerUserPromise = igiAccountsService.registerUser($scope.user);
+		registerUserPromise.then(function(response){
+			console.log(response.data);
+			if("scimType" in response.data.result){
+				$scope.errorFlag = true;
+				$scope.successMsg = "";
+				if(response.data.result.scimType == "OBJECT_NOT_UNIQUE")
+					$scope.errorMsg = "EmailId exits please choose a different one!";
+				else
+					$scope.errorMsg = "Try a stronger password!";
+			}
+			else{
+				$scope.errorFlag = false;
+				$scope.errorMsg = "";
+				$scope.successMsg = "User registered successfully!";
+			}
+					console.log($scope.errorFlag)
+		console.log($scope.errorMsg)
+		console.log($scope.successMsg)
+		})
+	}
+
+	}
+	$scope.login = function(){
+		window.location = "?id=igiPortalLoginPage";
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>h3{
+  font-family: Calibri; 
+  font-size: 20px;         
+  font-style: normal; 
+  font-weight: bold; 
+  color:Black;
+  text-align: center; 
+  text-decoration: underline
+}
+
+table{
+  font-family: Calibri; 
+  color:black; 
+  font-size: 15px; 
+  font-style: normal;
+  font-weight: bold;
+  text-align:;
+}
+table.inner{
+  border: 0px
+}
+tr{
+  margin-bottom: 10px;
+}
+.error-msg{
+	color:red;
+}
+.success-msg{
+	color:green;
+}
+
+
+
+
+
+.company-logo {
+    padding-left: 14px;
+    float: left;
+    padding-right: 10px;
+}
+.product-title {
+    padding-left: 7px;
+    margin-left: 3px;
+    color: #1fabc4 !important;
+  	font-size : 20px;
+}
+.header-container {
+    padding: 7px;
+    background: #fff;
+  border-bottom: 1px solid #c0c3c3;
+}
+.left-header-panel{
+	display : flex;
+  align-items :center;
+}
+.user-register-form{
+	margin-top :40px;
+}
+
+.reg_user_box {
+    padding: 10px 40px;
+}
+
+.shadow_box {
+    background: #f9f9f9;
+    width: 100%;
+    min-height: 200px;
+    border-radius: 0;
+    margin: 0;    
+}
+
+.f15 {
+    font-size: 15px;
+}
+.grey_bg {
+    background: #fff;
+    float: left;
+    width: 100%;
+    padding: 20px 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+.register-btn{
+    float: right;
+    width: 100px;
+    background-color: #69b089;
+    color: white;
+    border: 5px solid transparent;
+  	border-radius: 4px;
+}
+.reg_input{
+  color : gray;
+  input[type=text],input[type=password],textarea,input[type=email]{
+  	width : 100%;
+  }
+  .col-md-12{
+  	margin-bottom:15px;
+  }
+}
+@media (min-width: 768px)
+.reg_input {
+    padding: 5px;
+    float: left;
+    width: 100%;
+}
+.custom_inputbox{
+  	border: none;
+    border-bottom: 1px solid #d4d5d8;
+  	padding: 5px 10px;
+}
+.custom_inputbox:focus{
+  	border-bottom: 2px solid #69b089;
+}
+input:-webkit-autofill {
+     -webkit-box-shadow: 0 0 0 1000px #e8e9eb inset !important;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>igiportalregisteruser</id>
+        <internal>false</internal>
+        <link/>
+        <name>igiPortalRegisterUser</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-11-07 04:36:46</sys_created_on>
+        <sys_id>4dd4a132db25230033c6fbef29961966</sys_id>
+        <sys_mod_count>197</sys_mod_count>
+        <sys_name>igiPortalRegisterUser</sys_name>
+        <sys_package display_value="IGIPortal" source="x_263474_igiportal">8918d2b9db33130033c6fbef29961995</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="IGIPortal">8918d2b9db33130033c6fbef29961995</sys_scope>
+        <sys_update_name>sp_widget_4dd4a132db25230033c6fbef29961966</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-11-15 05:01:53</sys_updated_on>
+        <template><![CDATA[<!--navbar-fixed-top-->
+  <header class="navbar header-navbar">
+	 <nav class="navbar-inverse">
+    <div class="container-fluid header-container">
+    	<div class="row">
+    		<div class="col-md-6 col-sm-12 col-xs-12 left-header-panel">
+    			 <div class="company-logo"><img style="width: 72px; height: 60px;" src="yum_logo.png"></div>
+        		<div class="product-title">
+              <div>User Registration</div>
+        		</div>
+    		</div>
+    	</div>
+    </div>
+</nav> 
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+ </header>
+<div class="user-register-form">
+  <form name="registration">
+					<div class="col-md-3"></div>
+					<div class="col-md-6">
+						<div class="reg_user_box shadow_box">
+							<div class="row">
+							    
+								<div class="grey_bg f15">
+
+                 <!----- Username(email Id used as username)------------------------------------------------->
+                  <div class="reg_input">
+										<div class="col-md-12 ">
+											<div class="col-md-4">
+												<div>
+                          <label>Email Id <label class="error-msg">*</label> </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="email" name="User_Name" maxlength="30" required  ng-model="user.userName" ng-change = "pressKeyEmail()" class="custom_inputbox"/>
+                        <label class = "error-msg" ng-if="emailErrMsg == true">Please enter valid email address!</label>
+                      </div>
+										</div>
+									</div>
+                    
+                 <!----- First Name ------------------------------------------------->   
+									<div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>First Name </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="First_Name" maxlength="30" ng-model="user.firstName" class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Last Name ------------------------------------------------->  
+                   <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Last Name </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="First_Name" maxlength="30" ng-model="user.lastName"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  <!----- Yum Email ID------------------------------------------------->
+                  <div class="reg_input">
+										<div class="col-md-12 ">
+											<div class="col-md-4">
+												<div>
+                          <label>Yum Email Id </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="email" name="User_Name" maxlength="30" required  ng-model="user.yumEmailId" name="yumEmailId" class="custom_inputbox"/>
+                        <label class = "error-msg" ng-if="registration.yumEmailId.$error.email">Please enter valid email address!</label>
+                      </div>
+										</div>
+									</div>
+                    
+                   <!----- Date Of Birth ------------------------------------------------->  
+                  <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Date Of Birth </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px;">
+                      	<select name="Birthday_day" id="Birthday_Day" ng-model="user.dobDay" style="color: black; width: 65px" class="custom_inputbox">
+                          <option value="-1">Day:</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+
+                          <option value="13">13</option>
+                          <option value="14">14</option>
+                          <option value="15">15</option>
+                          <option value="16">16</option>
+                          <option value="17">17</option>
+                          <option value="18">18</option>
+                          <option value="19">19</option>
+                          <option value="20">20</option>
+                          <option value="21">21</option>
+
+                          <option value="22">22</option>
+                          <option value="23">23</option>
+                          <option value="24">24</option>
+                          <option value="25">25</option>
+                          <option value="26">26</option>
+                          <option value="27">27</option>
+                          <option value="28">28</option>
+                          <option value="29">29</option>
+                          <option value="30">30</option>
+
+                          <option value="31">31</option>
+                          </select>
+
+                          <select id="Birthday_Month" name="Birthday_Month" ng-model="user.dobMonth" style="color: black; width: 65px" class="custom_inputbox">
+                          <option value="-1">Month:</option>
+                          <option value="January">Jan</option>
+                          <option value="February">Feb</option>
+                          <option value="March">Mar</option>
+                          <option value="April">Apr</option>
+                          <option value="May">May</option>
+                          <option value="June">Jun</option>
+                          <option value="July">Jul</option>
+                          <option value="August">Aug</option>
+                          <option value="September">Sep</option>
+                          <option value="October">Oct</option>
+                          <option value="November">Nov</option>
+                          <option value="December">Dec</option>
+                    		</select>
+
+                            <select name="Birthday_Year" id="Birthday_Year" ng-model="user.dobYear" style="color: black; width: 65px" class="custom_inputbox">
+
+                            <option value="-1">Year:</option>
+                            <option value="2012">2012</option>
+                            <option value="2011">2011</option>
+                            <option value="2010">2010</option>
+                            <option value="2009">2009</option>
+                            <option value="2008">2008</option>
+                            <option value="2007">2007</option>
+                            <option value="2006">2006</option>
+                            <option value="2005">2005</option>
+                            <option value="2004">2004</option>
+                            <option value="2003">2003</option>
+                            <option value="2002">2002</option>
+                            <option value="2001">2001</option>
+                            <option value="2000">2000</option>
+
+                            <option value="1999">1999</option>
+                            <option value="1998">1998</option>
+                            <option value="1997">1997</option>
+                            <option value="1996">1996</option>
+                            <option value="1995">1995</option>
+                            <option value="1994">1994</option>
+                            <option value="1993">1993</option>
+                            <option value="1992">1992</option>
+                            <option value="1991">1991</option>
+                            <option value="1990">1990</option>
+
+                            <option value="1989">1989</option>
+                            <option value="1988">1988</option>
+                            <option value="1987">1987</option>
+                            <option value="1986">1986</option>
+                            <option value="1985">1985</option>
+                            <option value="1984">1984</option>
+                            <option value="1983">1983</option>
+                            <option value="1982">1982</option>
+                            <option value="1981">1981</option>
+                            <option value="1980">1980</option>
+                           </select>
+                  		</div>
+											<div class="col-md-2"></div>
+										</div>
+									</div>
+                  
+                   <!----- Place Of Birth ------------------------------------------------->  
+                   <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Place of Birth </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="First_Name" maxlength="30" ng-model="user.dobPlace"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  
+                  <!----- Mobile Number ------------------------------------------------->  
+                  <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Mobile Number </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="First_Name" maxlength="30" ng-model="user.phoneNumber"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Gender ------------------------------------------------->  
+                   <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Gender </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="radio" ng-model="user.gender" value="0" style="color: black">Male
+												<input type="radio" ng-model="user.gender" value="1" style="color: black">Female
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Street Address ------------------------------------------------->  
+                   <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Street Address </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<textarea name="Address" rows="2" cols="30" ng-model="user.streetAddress"  class="custom_inputbox"></textarea>
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Locality ------------------------------------------------->  
+									<div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Locality </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="City" maxlength="30" ng-model="user.locality"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Region ------------------------------------------------->  
+                  <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Region </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="City" maxlength="30" ng-model="user.region"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Postal Code ------------------------------------------------->  
+                  <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Postal Code </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="Pin_Code" maxlength="6" ng-model="user.postalCode"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div>
+                  
+                   <!----- Country ------------------------------------------------->  
+                  <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Country </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="text" name="City" maxlength="30" ng-model="user.country"  class="custom_inputbox"/>
+                      </div>
+										</div>
+									</div> 
+                  
+                  <!----- Password ------------------------------------------------->   
+                 <div class="reg_input">
+										<div class="col-md-12">
+											<div class="col-md-4">
+												<div>
+                          <label>Password<label class="error-msg">*</label> </label>
+                        </div>
+											</div>
+											<div class="col-md-8" style="padding-right:17px; color: black">
+                      	<input type="password" name="Password" value="" required ng-model="user.password" ng-change = "pressKeyPass()"  class="custom_inputbox"/>
+                        <label class = "error-msg" ng-if="pwdErrMsg == true">Please enter password!</label>
+                      </div>
+										</div>
+									</div>
+                                    
+                  <!----- Captcha ------------------------------------------------->   
+                 <div class="reg_input">
+										<div class="col-md-12" align="center">
+											<div>
+												<div class="g-recaptcha" data-sitekey="6LeCcHoUAAAAAMe9rRnVbSInXowvBTUfYFX7ZIQk"></div>
+                        <label class = "error-msg" ng-if="captchaErrMsg == true">Please select captcha!</label>
+                      </div>
+										</div>
+									</div>
+                  
+                 <!----- Submit ------------------------------------------------->   
+                 <div class="reg_input">
+ 										<div class="col-md-12">
+											<div class="col-md-8">
+												<div style = "padding-bottom: 15px;">
+                          Already have an account? <a ng-click="login()">Login</a>
+                        </div>
+											</div>
+											<div class="col-md-4" style="padding-right:17px;">
+                      	<input type="submit" value="Submit" ng-click="register()" class="register-btn">
+                      </div>
+										</div>
+                  </div>
+                  <!--Error Message-->
+                   <div class="reg_input">
+ 										<div class="col-md-12">
+                        <div ng-if = "errorMsg != ''">
+                          <div colspan="2" align="center" class="error-msg">{{errorMsg}}</div>
+                        </div>
+                        <div ng-if = "successMsg != ''" class = "success-msg">
+                          <div colspan="2" align="center">{{successMsg}}</div>
+                        </div>
+										</div>
+                  </div>
+    
+  </form>
+</div>
+  <!--<table align="center" cellpadding = "10">
+ <!----- User Name ----------------------------------------------------------
+<tr>
+<td>USER NAME *</td>
+<td><input type="text" name="User_Name" maxlength="30" required ng-model="user.userName"/>
+(max 30 characters a-z and A-Z)
+</td>
+</tr>
+<!----- First Name ----------------------------------------------------------
+<tr>
+<td>FIRST NAME</td>
+<td><input type="text" name="First_Name" maxlength="30" ng-model="user.firstName"/>
+(max 30 characters a-z and A-Z)
+</td>
+</tr>
+ 
+<!----- Last Name ----------------------------------------------------------
+<tr>
+<td>LAST NAME</td>
+<td><input type="text" name="Last_Name" maxlength="30" ng-model="user.lastName"/>
+(max 30 characters a-z and A-Z)
+</td>
+</tr>
+ 
+<!----- Date Of Birth --------------------------------------------------------
+<tr>
+<td>DATE OF BIRTH</td>
+ 
+<td>
+<select name="Birthday_day" id="Birthday_Day" ng-model="user.dobDay">
+<option value="-1">Day:</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+ 
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+ 
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+ 
+<option value="22">22</option>
+<option value="23">23</option>
+<option value="24">24</option>
+<option value="25">25</option>
+<option value="26">26</option>
+<option value="27">27</option>
+<option value="28">28</option>
+<option value="29">29</option>
+<option value="30">30</option>
+ 
+<option value="31">31</option>
+</select>
+ 
+<select id="Birthday_Month" name="Birthday_Month" ng-model="user.dobMonth">
+<option value="-1">Month:</option>
+<option value="January">Jan</option>
+<option value="February">Feb</option>
+<option value="March">Mar</option>
+<option value="April">Apr</option>
+<option value="May">May</option>
+<option value="June">Jun</option>
+<option value="July">Jul</option>
+<option value="August">Aug</option>
+<option value="September">Sep</option>
+<option value="October">Oct</option>
+<option value="November">Nov</option>
+<option value="December">Dec</option>
+</select>
+ 
+<select name="Birthday_Year" id="Birthday_Year" ng-model="user.dobYear">
+ 
+<option value="-1">Year:</option>
+<option value="2012">2012</option>
+<option value="2011">2011</option>
+<option value="2010">2010</option>
+<option value="2009">2009</option>
+<option value="2008">2008</option>
+<option value="2007">2007</option>
+<option value="2006">2006</option>
+<option value="2005">2005</option>
+<option value="2004">2004</option>
+<option value="2003">2003</option>
+<option value="2002">2002</option>
+<option value="2001">2001</option>
+<option value="2000">2000</option>
+ 
+<option value="1999">1999</option>
+<option value="1998">1998</option>
+<option value="1997">1997</option>
+<option value="1996">1996</option>
+<option value="1995">1995</option>
+<option value="1994">1994</option>
+<option value="1993">1993</option>
+<option value="1992">1992</option>
+<option value="1991">1991</option>
+<option value="1990">1990</option>
+ 
+<option value="1989">1989</option>
+<option value="1988">1988</option>
+<option value="1987">1987</option>
+<option value="1986">1986</option>
+<option value="1985">1985</option>
+<option value="1984">1984</option>
+<option value="1983">1983</option>
+<option value="1982">1982</option>
+<option value="1981">1981</option>
+<option value="1980">1980</option>
+</select>
+</td>
+</tr>
+ <!----- Place Of Birtha ----------------------------------------------------------
+<tr>
+<td>PLACE OF BIRTH</td>
+<td><input type="text" name="Place_Of_Birth" maxlength="30" ng-model="user.dobPlace"/>
+(max 30 characters a-z and A-Z)
+</td>
+</tr>
+<!----- Email Id ----------------------------------------------------------
+<tr>
+<td>EMAIL ID</td>
+<td><input type="text" name="Email_Id" maxlength="100" ng-model="user.emailId"/></td>
+</tr>
+ 
+<!----- Mobile Number ----------------------------------------------------------
+<tr>
+<td>MOBILE NUMBER</td>
+<td>
+<input type="text" name="Mobile_Number" maxlength="20" ng-model="user.phoneNumber"/>
+(20 digit number)
+</td>
+</tr>
+ 
+<!----- Gender -----------------------------------------------------------
+<tr>
+<td>GENDER</td>
+<td ng-model="user.gender">
+Male <input type="radio" name="Gender" value="0" />
+Female <input type="radio" name="Gender" value="1" />
+</td>
+</tr>
+ 
+<!----- Address ----------------------------------------------------------
+<tr>
+<td>STREET ADDRESS <br /><br /><br /></td>
+<td><textarea name="Address" rows="4" cols="30" ng-model="user.streetAddress"></textarea></td>
+</tr>
+ 
+<!----- City ----------------------------------------------------------
+<tr>
+<td>LOCALITY</td>
+<td><input type="text" name="City" maxlength="30" ng-model="user.locality"/>
+(max 30 characters a-z and A-Z)
+</td>
+</tr>
+  
+<!----- City ----------------------------------------------------------
+<tr>
+<td>REGION</td>
+<td><input type="text" name="City" maxlength="30" ng-model="user.region"/>
+(max 30 characters a-z and A-Z)
+</td>
+</tr>
+<!----- Pin Code ----------------------------------------------------------
+<tr>
+<td>POSTAL CODE</td>
+<td><input type="text" name="Pin_Code" maxlength="6" ng-model="user.postalCode"/>
+(6 digit number)
+</td>
+</tr>
+ 
+<!----- State ----------------------------------------------------------
+<!--<tr>
+<td>STATE</td>
+<td><input type="text" name="State" maxlength="30" />
+(max 30 characters a-z and A-Z)
+</td>
+</tr>-->
+ 
+<!----- Country ----------------------------------------------------------
+<tr>
+<td>COUNTRY</td>
+<td><input type="text" name="Country" value="" ng-model="user.country"/></td>
+</tr>
+
+ 
+<!----- Password ----------------------------------------------------------
+<tr>
+<td>PASSWORD *</td>
+<td><input type="password" name="Password" value="" required ng-model="user.password"/></td>
+</tr>
+
+
+<!----- Submit and Reset -------------------------------------------------
+<tr>
+<td colspan="2" align="center">
+<input type="submit" value="Submit" ng-click="register()">
+</td>
+  <td colspan="2" align="center">
+Already have an account? <a ng-click="login()">Login</a>
+</td>
+</tr>
+  <tr ng-if = "errorMsg != ''">
+    <td colspan="2" align="center" class="error-msg">{{errorMsg}}</td>
+  </tr>
+  <tr ng-if = "successMsg != ''" class = "success-msg">
+    <td colspan="2" align="center">{{successMsg}}</td>
+  </tr>
+</table>
+
+]]></template>
+    </sp_widget>
+</record_update>
